@@ -1,101 +1,102 @@
-import Image from "next/image";
+"use client"
+
+import { useEffect, useRef } from "react";
 
 export default function Home() {
-  return (
-    <div className="grid grid-rows-[20px_1fr_20px] items-center justify-items-center min-h-screen p-8 pb-20 gap-16 sm:p-20 font-[family-name:var(--font-geist-sans)]">
-      <main className="flex flex-col gap-8 row-start-2 items-center sm:items-start">
-        <Image
-          className="dark:invert"
-          src="https://nextjs.org/icons/next.svg"
-          alt="Next.js logo"
-          width={180}
-          height={38}
-          priority
-        />
-        <ol className="list-inside list-decimal text-sm text-center sm:text-left font-[family-name:var(--font-geist-mono)]">
-          <li className="mb-2">
-            Get started by editing{" "}
-            <code className="bg-black/[.05] dark:bg-white/[.06] px-1 py-0.5 rounded font-semibold">
-              app/page.tsx
-            </code>
-            .
-          </li>
-          <li>Save and see your changes instantly.</li>
-        </ol>
+  const questionRef = useRef<HTMLDivElement>(null)
+  const billgatesRef = useRef<HTMLDivElement>(null)
+  const microsoftRef = useRef<HTMLDivElement>(null)
+  const countdownWrapperRef = useRef<HTMLDivElement>(null)
+  const countdownRef = useRef<HTMLDivElement>(null)
+  
 
-        <div className="flex gap-4 items-center flex-col sm:flex-row">
-          <a
-            className="rounded-full border border-solid border-transparent transition-colors flex items-center justify-center bg-foreground text-background gap-2 hover:bg-[#383838] dark:hover:bg-[#ccc] text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <Image
-              className="dark:invert"
-              src="https://nextjs.org/icons/vercel.svg"
-              alt="Vercel logomark"
-              width={20}
-              height={20}
-            />
-            Deploy now
-          </a>
-          <a
-            className="rounded-full border border-solid border-black/[.08] dark:border-white/[.145] transition-colors flex items-center justify-center hover:bg-[#f2f2f2] dark:hover:bg-[#1a1a1a] hover:border-transparent text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5 sm:min-w-44"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Read our docs
-          </a>
+  useEffect(() => {
+    const animationTargetRefs = [questionRef, billgatesRef, microsoftRef]
+    const countdown = countdownRef.current?.querySelectorAll('div')
+    const countdownLength = countdown!.length
+
+    const unitHeight = countdownWrapperRef.current!.offsetHeight / (countdownLength + 2)
+
+    const handleScroll = () => {
+      animationTargetRefs.forEach(fadeinTarget => {
+        if (scrollY + innerHeight + 50 < fadeinTarget.current!.offsetTop) {
+          fadeinTarget.current?.classList.remove("animate-fadein")
+        } else {
+          fadeinTarget.current?.classList.add("animate-fadein")
+        }
+      })
+
+      countdown?.values().forEach((div, index) => {
+        
+        const triggerY = countdownWrapperRef.current!.offsetTop + ((countdownLength - index - 1) * unitHeight)
+        if (scrollY > triggerY) {
+          const degree = Math.min(90, ((scrollY - triggerY) / unitHeight) * 90)
+          div.style.transform = `rotate(${degree}deg)`
+
+          if(degree >= 90) {
+            div.style.visibility = 'hidden'
+          } else {
+            div.style.visibility = 'visible'
+          }
+        } else {
+          div.style.transform = `rotate(0deg)`
+          div.style.visibility = 'visible'
+        }
+      })
+    }
+    window.addEventListener('scroll', handleScroll);
+
+    return () => {
+      window.removeEventListener('scroll', handleScroll);
+    };
+  }, [])
+
+  return (
+    <div className="w-full h-[5500px] text-8xl font-bold text-center">
+      <div className="flex bg-red-400 h-[1000px] justify-center items-center">
+        <div className="text-9xl">
+          Hello!
         </div>
-      </main>
-      <footer className="row-start-3 flex gap-6 flex-wrap items-center justify-center">
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="https://nextjs.org/icons/file.svg"
-            alt="File icon"
-            width={16}
-            height={16}
-          />
-          Learn
-        </a>
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="https://nextjs.org/icons/window.svg"
-            alt="Window icon"
-            width={16}
-            height={16}
-          />
-          Examples
-        </a>
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://nextjs.org?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="https://nextjs.org/icons/globe.svg"
-            alt="Globe icon"
-            width={16}
-            height={16}
-          />
-          Go to nextjs.org →
-        </a>
-      </footer>
+      </div>
+      <div className="flex flex-col h-[1600px] bg-blue-400 justify-around items-center">
+        <div className="flex h-[100px] items-center" ref={questionRef}>
+          Here is a question!
+        </div>
+        <div className="flex h-[100px] items-center" ref={billgatesRef}>
+          How Bill Gates sings?
+        </div>
+      </div>
+      <div className="h-[3000px] bg-yellow-400" ref={countdownWrapperRef}>
+        <div className=" sticky top-0 w-full h-screen">
+          <div className="absolute w-full h-full bg-purple-500 flex items-center justify-center text-center">The answer is...</div>
+          <div className="relative w-full h-full flex items-center justify-center" ref={countdownRef}>
+            <div
+              style={{
+                transformOrigin: "bottom right"
+              }}
+              className="absolute w-full h-full bg-green-500 flex items-center justify-center text-center">
+              1!
+            </div>
+            <div style={{
+              transformOrigin: "bottom right"
+            }}
+              className="absolute w-full h-full bg-blue-500 flex items-center justify-center text-center">
+              2!
+            </div>
+            <div style={{
+              transformOrigin: "bottom right"
+            }}
+              className="absolute w-full h-full bg-red-500 flex items-center justify-center text-center">
+              3!
+            </div>
+          </div>
+        </div>
+      </div>
+      <div className="flex flex-col bg-gray-400 h-[800px] justify-around items-center">
+        <div className="flex h-[100px] items-center" ref={microsoftRef}>
+          Microsoft!
+        </div>
+      </div>
     </div>
   );
 }
